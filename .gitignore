@@ -1,0 +1,12 @@
+# PyTorch Lightning logs
+notebooks/lightning_logs/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
