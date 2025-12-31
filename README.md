@@ -1,55 +1,150 @@
-# TIS3 Capstone Project – Electricity Price Forecasting
+# Time Series Analysis `TIS3` Capstone Project – Electricity Price Forecasting for EU AI Datacenter Site Selection
 
 ## Project Overview
-This project forecasts daily electricity prices in selected EU countries to support
-the decision of locating a new AI data center based on energy cost and risk.
 
-The focus is on building an end-to-end forecasting pipeline using open, dynamic data,
-and comparing statistical, machine learning, and deep learning models.
+This project forecasts daily wholesale electricity prices in selected European countries to support **cost- and risk-aware site selection** for a new AI data center.
+
+Electricity is a major driver of datacenter operational expenditure (OpEx), and price uncertainty directly translates into planning and budgeting risk.
+The goal is therefore not only to forecast prices, but to **turn forecasts into a decision tool**.
+
+The project delivers an **end-to-end forecasting pipeline**, model comparison across multiple approaches, and **daily forecasts with uncertainty for January 2026**.
+
+---
+
+## Business Problem
+
+**Problem**
+Forecast daily electricity prices to support cost- and risk-aware selection of an AI data center location in the EU.
+
+**Why this matters**
+
+* Electricity cost is a direct and continuous operational expense
+* Forecast uncertainty translates into operational and budgeting risk
+* Long-term infrastructure decisions require comparability across locations
+
+---
 
 ## Data
-We use daily wholesale electricity prices from 01.01.2015 to 28.12.2025 for:
-Austria, Germany, Switzerland, France, Poland, and Estonia.
 
-The data is publicly available and updated continuously.
+* **Source**: Ember dataset from ENTSO-e (European Network of Transmission System Operators for Electricity)
+* **Data type**: Daily wholesale electricity prices
+* **Time range**: 01.01.2015 – 28.12.2025
+* **Countries**:
 
-## Forecasting Pipeline
-The project follows a CRISP-DM style forecasting process:
-- Business understanding
-- Data preparation and preprocessing
-- Baseline forecasting (naive, seasonal naive)
-- Statistical models (Holt-Winters, AutoARIMA)
-- Machine learning models (Huber Regression)
-- Deep learning models (xLSTM)
-- Model evaluation and selection
-- Final forecasting with uncertainty
+  * Austria
+  * Germany
+  * Switzerland
+  * France
+  * Poland
+  * Estonia
+* **Forecast horizon**: Daily prices for January 2026
 
-## Model Selection
-Baseline and statistical models provided strong reference performance.
-Huber Regression consistently outperformed baselines across countries.
+---
 
-Deep learning (xLSTM) was evaluated but did not improve predictive accuracy
-for this dataset and was therefore not selected as the final model.
+## Forecasting Pipeline (CRISP-DM)
+
+The project follows a CRISP-DM-style forecasting pipeline:
+
+1. Business understanding
+2. Data preparation and preprocessing
+3. Baseline forecasting (naive, weekly seasonal naive)
+4. Statistical models (Holt-Winters, AutoARIMA)
+5. Machine learning models (Huber Regression)
+6. Deep learning benchmark (xLSTM)
+7. Model evaluation and selection
+8. Final forecasting with uncertainty
+
+---
+
+## Data Engineering
+
+* Extracted country-level electricity price series
+* Stored each country as a separate tabular dataset for clarity and efficiency
+* Aligned all data to a daily frequency
+* Imported and assembled datasets dynamically for modeling and evaluation
+
+---
+
+## Modeling Approach
+
+The goal was to compare **model families**, not just individual methods.
+
+**Models evaluated**
+
+* **Baselines**
+
+  * Naive
+  * Weekly seasonal naive
+* **Statistical models**
+
+  * Holt-Winters
+  * AutoARIMA
+* **Machine learning**
+
+  * Huber Regression with lag-based features
+* **Deep learning (benchmark)**
+
+  * xLSTM
+
+**Key findings**
+
+* Statistical models did not outperform baselines
+* Huber Regression consistently improved performance across countries
+* xLSTM did not add predictive value under the given setup and data size
+
+---
+
+## Evaluation
+
+* **Validation strategy**: Time-based validation to avoid information leakage
+* **Metrics**:
+
+  * MAE
+  * RMSE
+  * MAPE (reported, but MAE/RMSE used for selection)
+* **Selection criterion**:
+
+  * Consistent out-of-sample improvement relative to baselines
+
+---
 
 ## Final Forecast
-The final model (Huber Regression) was retrained on the full dataset and used
-to forecast daily electricity prices for January 2026.
 
-Uncertainty is quantified using residual-based prediction intervals.
+* The final **Huber Regression model** was retrained on the full dataset
+* **Daily electricity prices for January 2026** were forecasted for all countries
+* **Uncertainty** was quantified using residual-based prediction intervals
 
-Forecasts are available in:
-outputs/jan_2026_electricity_forecasts.csv
+**Forecast output:**
+`outputs/jan_2026_electricity_forecasts.csv`
 
-## Value and Decision Support
-Accurate electricity price forecasts support:
-- Cost estimation for data center operations
-- Risk-aware comparison of candidate locations
-- Better planning under price uncertainty
+---
 
-Higher forecast uncertainty directly translates into higher operational risk,
-which is critical when selecting a long-term infrastructure location.
+## Decision Support & Insights
+
+Forecasts were translated into decision-oriented insights using:
+
+* Expected average prices
+* Prediction interval widths (planning risk proxy)
+* Upper-bound cost scenarios
+* Monthly accumulated OpEx under a 1 MW, 24/7 load assumption
+
+These outputs enable:
+
+* Cost-efficient location comparison
+* Risk-aware planning
+* Transparent trade-offs between low cost and high uncertainty
+
+---
 
 ## Team
-- Peter: Set up and Data Preprocessing
-- Mohamed: Modeling, Evaluation, Forecasting Pipeline
-- Raphael: Visualization and Presentation
+
+* **Peter Keszei**
+  Data setup, preprocessing, country-level dataset preparation
+
+* **Mohamed Haroun**
+  Modeling, evaluation, forecasting pipeline, model selection, January 2026 forecasts
+
+* **Raphael Suchomel**
+  Visualization, interpretation, decision framing, presentation
+
+All team members contributed throughout the project; listed roles indicate areas of primary focus.
